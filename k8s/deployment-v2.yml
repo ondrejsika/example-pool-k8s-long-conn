@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  selector:
+    matchLabels:
+      app: server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      # 10 * 86400 (1 day in sec) = 864000
+      terminationGracePeriodSeconds: 864000
+      containers:
+        - name: main
+          image: reg.istry.cz/ondrejsika/example-pool-k8s-long-conn--server
+          ports:
+            - containerPort: 3333
+          args:
+            - ./server
+            - -instance
+            - server-1
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10Mi
+            limits:
+              memory: 20Mi
+              cpu: 20m
